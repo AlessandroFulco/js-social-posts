@@ -73,11 +73,11 @@ const posts = [
 // selezione del contenitore globale dei post
 const container = document.getElementById('container');
 
-
 function takeContentPost(postInfo) {
 
     posts.forEach(
         (post) => {
+
             // selezioniamo ogni valore delle chiavi dell'oggetto salvandole in delle variabili d'appoggio
 
             // id
@@ -89,7 +89,7 @@ function takeContentPost(postInfo) {
             // nome e immagine profilo
             const myAuthor = post.author;
             // like al post
-            const myLikes = post.likes;
+            let myLikes = post.likes;
             // data da aggiungere nell'header sotto il nome dell'autore
             const myCreated = post.created;
             
@@ -107,13 +107,18 @@ function takeContentPost(postInfo) {
             const myHeaderPost = createPostHeader(createImg("img", "profile-pic", myAuthor.image, myAuthor.name), myAuthor.name, myCreated);
             const myMainTextPost = createTextMain(myContent);
             const myMainImgPost = createImgMain(createImg("img", "", myMedia, ""));
-
+            const myFooterPost = createFooterPost(myLikes);
 
             // stampa in pagina del contenuto
             containerPost.append(myHeaderPost);
             containerPost.append(myMainTextPost);
             containerPost.append(myMainImgPost);
+            containerPost.append(myFooterPost);
             container.append(containerPost);
+            
+            
+
+            
         }
     )
         
@@ -131,7 +136,6 @@ function createElement(type, myClass){
     el.className = myClass;
     return el;
 }
-
 function createPostHeader(immagine, nome, time){
     // container header
     const containerHeader = createElement("div", "post__header");
@@ -167,7 +171,6 @@ function createPostHeader(immagine, nome, time){
     
     return containerHeader; 
 }
-
 function createTextMain(text) {
     // testo post
     const elText = createElement("div", "post__text");
@@ -186,7 +189,45 @@ function createImgMain(media) {
     
     return containerImgContent;
 }
-
-function createFooterPost(){
+function createFooterPost(saveLike){
+    // container globale footer
     const containerPostFooter = createElement("div", "post__footer");
+    // sub container footer
+    const subContainerFooter = createElement("div", "likes js-likes");
+    // container btn
+    const containerBtn = createElement("div", "likes__cta");
+    // container counter
+    const containerBtnCounter = createElement("div", "likes__counter");
+    containerBtnCounter.innerHTML = "Piace a " + '<b id="like-counter-1" class="js-likes-counter">' + saveLike + '</b>' + " persone";
+    // button
+    const btn = createElement("a", "like-button  js-like-button");
+    btn.href = "#";
+    // icon
+    const icon = createElement("i", "like-button__icon fas fa-thumbs-up");
+    // mi piace
+    const like = createElement("span", "like-button__label");
+    like.innerHTML = " Mi Piace";
+
+
+
+    btn.addEventListener("click",
+        function() {
+            btn.classList.add("like-button--liked");
+            posts.forEach(
+                (element) => {
+                    element["likes"] = element.likes++;
+                }
+            )
+        
+        }     
+    )
+
+    btn.append(icon);
+    btn.append(like);
+    containerBtn.append(btn);
+    subContainerFooter.append(containerBtn);
+    subContainerFooter.append(containerBtnCounter);
+    containerPostFooter.append(subContainerFooter);
+
+    return containerPostFooter;
 }
