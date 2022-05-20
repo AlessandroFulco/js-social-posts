@@ -70,8 +70,11 @@ const posts = [
     }
 ];
 
+// selezione del contenitore globale dei post
+const container = document.getElementById('container');
 
-function createPost(postInfo) {
+
+function takeContentPost(postInfo) {
 
     posts.forEach(
         (post) => {
@@ -90,19 +93,100 @@ function createPost(postInfo) {
             // data da aggiungere nell'header sotto il nome dell'autore
             const myCreated = post.created;
             
+            // creare il contenitore post
+            const containerPost = createElement("div", "post");
             
+            function createImg(type, myClass, mySrc, myAlt){
+                const elImg = createElement(type, myClass);
+                elImg.src = mySrc;
+                elImg.alt = myAlt;
+                return elImg;
+            }
+            
+            // funzioni che creano il contenuto
+            const myHeaderPost = createPostHeader(createImg("img", "profile-pic", myAuthor.image, myAuthor.name), myAuthor.name, myCreated);
+            const myMainTextPost = createTextMain(myContent);
+            const myMainImgPost = createImgMain(createImg("img", "", myMedia, ""));
 
 
-        
-
-
-
+            // stampa in pagina del contenuto
+            containerPost.append(myHeaderPost);
+            containerPost.append(myMainTextPost);
+            containerPost.append(myMainImgPost);
+            container.append(containerPost);
         }
     )
-
-
-
+        
+    return;
 }
 
+takeContentPost(posts);
 
-createPost(posts);
+
+
+
+
+function createElement(type, myClass){
+    const el = document.createElement(type);
+    el.className = myClass;
+    return el;
+}
+
+function createPostHeader(immagine, nome, time){
+    // container header
+    const containerHeader = createElement("div", "post__header");
+    // container meta
+    const containeMeta = createElement("div", "post-meta");
+    // container icon contenitore
+    const containerIcon = createElement("div", "post-meta__icon");
+    // container data
+    const containerData = createElement("div", "post-meta__data");
+    // name profile
+    const containerNome = createElement("div", "post-meta__author");
+    // data post
+    const containerTime = createElement("div", "post-meta__time");
+
+
+    // container meta nome data
+    containerTime.append(time);
+    containerNome.append(nome);
+    // container main che appede container figli
+    containerData.append(containerNome);
+    containerData.append(containerTime);
+
+
+    // container immagine
+    containerIcon.append(immagine);
+
+    // conteiner meta globale
+    containeMeta.append(containerIcon);
+    containeMeta.append(containerData);
+
+    // container header che contiene meta globale
+    containerHeader.append(containeMeta);
+    
+    return containerHeader; 
+}
+
+function createTextMain(text) {
+    // testo post
+    const elText = createElement("div", "post__text");
+
+    elText.append(text);
+    // appendre immagine contenuto
+    
+    return elText;
+}
+function createImgMain(media) {
+    // immagine contenuto
+    const containerImgContent = createElement("div", "post__image");
+
+    // appendre immagine contenuto
+    containerImgContent.append(media);
+    
+    return containerImgContent;
+}
+
+function createFooterPost(){
+    const containerPostFooter = createElement("div", "post__footer");
+}
