@@ -70,164 +70,81 @@ const posts = [
     }
 ];
 
-// selezione del contenitore globale dei post
-const container = document.getElementById('container');
 
-function takeContentPost(postInfo) {
+let myContainer = document.getElementById("container");
 
-    posts.forEach(
-        (post) => {
+posts.forEach((element) => {
 
-            // selezioniamo ogni valore delle chiavi dell'oggetto salvandole in delle variabili d'appoggio
+    myContainer.innerHTML += 
+    `
+    <div class="post">
+        <div class="post__header">
+            <div class="post-meta">   
+                <div class="post-meta__icon">
+                    <img class="profile-pic" src="${element.media}" alt="${element.author.name}">                    
+                </div>
+                <div class="post-meta__data">
+                    <div class="post-meta__author">${element.author.name}</div>
+                    <div class="post-meta__time">${element.author.created}</div>
+                </div>                    
+            </div>
+        </div>
+        <div class="post__text">${element.content}</div>
+        <div class="post__image">
+            <img src="${element.author.image}" alt="">
+        </div>
+        <div class="post__footer">
+            <div class="likes js-likes">
+                <div class="likes__cta">
+                    <a class="like-button  js-like-button" href="#" data-postid="${element.id}">
+                        <i class="like-button__icon fas fa-thumbs-up" aria-hidden="true"></i>
+                        <span class="like-button__label">Mi Piace</span>
+                    </a>
+                </div>
+                <div class="likes__counter">
+                    Piace a <b id="like-counter-${element.id}" class="js-likes-counter">${element.likes}</b> persone
+                </div>
+            </div> 
+        </div>            
+    </div>
+    `
+});
 
-            // id
-            const myId = post.id;
-            // testo
-            const myContent = post.content;
-            // immagine contenuto principale
-            const myMedia = post.media;
-            // nome e immagine profilo
-            const myAuthor = post.author;
-            // like al post
-            let myLikes = post.likes;
-            // data da aggiungere nell'header sotto il nome dell'autore
-            const myCreated = post.created;
-            
-            // creare il contenitore post
-            const containerPost = createElement("div", "post");
-            
-            function createImg(type, myClass, mySrc, myAlt){
-                const elImg = createElement(type, myClass);
-                elImg.src = mySrc;
-                elImg.alt = myAlt;
-                return elImg;
+
+const likeBtn = document.querySelectorAll(".js-like-button");
+
+likeBtn.forEach((button, index) => {
+    button.addEventListener("click",
+        function() {
+            button.classList.toggle("like-button--liked");
+            if (button.classList.contains("like-button--liked")) {
+                posts[index].likes++;
+            } else {
+                posts[index].likes--;
             }
-            
-            // funzioni che creano il contenuto
-            const myHeaderPost = createPostHeader(createImg("img", "profile-pic", myAuthor.image, myAuthor.name), myAuthor.name, myCreated);
-            const myMainTextPost = createTextMain(myContent);
-            const myMainImgPost = createImgMain(createImg("img", "", myMedia, ""));
-            const myFooterPost = createFooterPost(myLikes);
 
-            // stampa in pagina del contenuto
-            containerPost.append(myHeaderPost);
-            containerPost.append(myMainTextPost);
-            containerPost.append(myMainImgPost);
-            containerPost.append(myFooterPost);
-            container.append(containerPost);
-            
-            
-
-            
+            let likesCounter = document.getElementById("like-counter-" + posts[index].id);
+            likesCounter.innerText = posts[index].likes;
         }
     )
-        
-    return;
-}
-
-takeContentPost(posts);
+});
 
 
 
 
 
-function createElement(type, myClass){
-    const el = document.createElement(type);
-    el.className = myClass;
-    return el;
-}
-function createPostHeader(immagine, nome, time){
-    // container header
-    const containerHeader = createElement("div", "post__header");
-    // container meta
-    const containeMeta = createElement("div", "post-meta");
-    // container icon contenitore
-    const containerIcon = createElement("div", "post-meta__icon");
-    // container data
-    const containerData = createElement("div", "post-meta__data");
-    // name profile
-    const containerNome = createElement("div", "post-meta__author");
-    // data post
-    const containerTime = createElement("div", "post-meta__time");
-
-
-    // container meta nome data
-    containerTime.append(time);
-    containerNome.append(nome);
-    // container main che appede container figli
-    containerData.append(containerNome);
-    containerData.append(containerTime);
-
-
-    // container immagine
-    containerIcon.append(immagine);
-
-    // conteiner meta globale
-    containeMeta.append(containerIcon);
-    containeMeta.append(containerData);
-
-    // container header che contiene meta globale
-    containerHeader.append(containeMeta);
-    
-    return containerHeader; 
-}
-function createTextMain(text) {
-    // testo post
-    const elText = createElement("div", "post__text");
-
-    elText.append(text);
-    // appendre immagine contenuto
-    
-    return elText;
-}
-function createImgMain(media) {
-    // immagine contenuto
-    const containerImgContent = createElement("div", "post__image");
-
-    // appendre immagine contenuto
-    containerImgContent.append(media);
-    
-    return containerImgContent;
-}
-function createFooterPost(saveLike){
-    // container globale footer
-    const containerPostFooter = createElement("div", "post__footer");
-    // sub container footer
-    const subContainerFooter = createElement("div", "likes js-likes");
-    // container btn
-    const containerBtn = createElement("div", "likes__cta");
-    // container counter
-    const containerBtnCounter = createElement("div", "likes__counter");
-    containerBtnCounter.innerHTML = "Piace a " + '<b id="like-counter-1" class="js-likes-counter">' + saveLike + '</b>' + " persone";
-    // button
-    const btn = createElement("a", "like-button  js-like-button");
-    btn.href = "#";
-    // icon
-    const icon = createElement("i", "like-button__icon fas fa-thumbs-up");
-    // mi piace
-    const like = createElement("span", "like-button__label");
-    like.innerHTML = " Mi Piace";
 
 
 
-    btn.addEventListener("click",
-        function() {
-            btn.classList.add("like-button--liked");
-            posts.forEach(
-                (element) => {
-                    element["likes"] = element.likes++;
-                }
-            )
-        
-        }     
-    )
 
-    btn.append(icon);
-    btn.append(like);
-    containerBtn.append(btn);
-    subContainerFooter.append(containerBtn);
-    subContainerFooter.append(containerBtnCounter);
-    containerPostFooter.append(subContainerFooter);
 
-    return containerPostFooter;
-}
+
+
+
+
+
+
+
+
+
+
